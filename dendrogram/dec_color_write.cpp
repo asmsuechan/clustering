@@ -22,19 +22,17 @@ void dec_color::dec(Mat im){
 
   for(int y=0;y<im.rows;y++){
     for(int x=0;x<im.cols;x++){
-      for(int c=0;c<im.channels();c++){
-        for(int i=0;i<3;i++){
-          color=im.at<Vec3b>(y,x)[i];
-          //4値化
-          if(0<=color && color<=63){
-            im_dst.at<Vec3b>(y,x)[i] = 32;
-          }else if(64<=color && color<=127){
-            im_dst.at<Vec3b>(y,x)[i] = 96;
-          }else if(128<=color && color<=191){
-            im_dst.at<Vec3b>(y,x)[i] = 160;
-          }else if(192<=color && color<=255){
-            im_dst.at<Vec3b>(y,x)[i] = 224;
-          }
+      for(int i=0;i<im.channels();i++){
+        color=im.at<Vec3b>(y,x)[i];
+        //4値化
+        if(0<=color && color<=63){
+          im_dst.at<Vec3b>(y,x)[i] = 32;
+        }else if(64<=color && color<=127){
+          im_dst.at<Vec3b>(y,x)[i] = 96;
+        }else if(128<=color && color<=191){
+          im_dst.at<Vec3b>(y,x)[i] = 160;
+        }else if(192<=color && color<=255){
+          im_dst.at<Vec3b>(y,x)[i] = 224;
         }
       }
     }
