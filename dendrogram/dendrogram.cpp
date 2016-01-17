@@ -25,12 +25,7 @@ int main(void){
   Mat im[N];
   Mat im_dst(im[1].size(), im[1].type());
   //画像読み込み
-  //string pic[N]={"./apple/56501XV-1243_B1.jpg","./apple/shinanored-1.jpg","./apple/151021_3.jpg","./orange/373_fit512.jpg","./orange/56501XV-1266.jpg","./orange/56501XV-1326_B2.jpg"};
   //string pic[N]={"./color/r1.jpg","./color/r2.jpg","./color/r3.jpg","./color/b1.jpg","./color/b2.jpg","./color/b3.jpg"};
-  //string pic[N]={"./color_ringo/r1.jpg","./color_ringo/r2.jpg","./color_ringo/r3.jpg","./color_ringo/b1.png","./color_ringo/b2.jpg","./color_ringo/b3.png"};
-  string pic[N]={"./color_zaku/r1.jpg","./color_zaku/r2.jpg","./color_zaku/r3.jpg","./color_zaku/b1.jpg","./color_zaku/b2.jpg","./color_zaku/b3.jpg"};
-  //string pic[N]={"./color_ringo_sttr/r1.jpg","./color_ringo_sttr/r2.jpg","./color_ringo_sttr/r3.jpg","./color_ringo_sttr/b1.jpg","./color_ringo_sttr/b2.jpg","./color_ringo_sttr/b3.jpg"};
-  //string pic[N]={"./color_bekki/r1.jpg","./color_bekki/r2.jpg","./color_bekki/r3.jpg","./color_bekki/b1.jpg","./color_bekki/b2.jpg","./color_bekki/b3.jpg"};
   
   for(int i=0;i<N;i++){
     im[i]=imread(pic[i]);
@@ -43,28 +38,19 @@ int main(void){
         D[i][k]=histgram[k];
       }
   }
+
   for(int i=0;i<N;i++){
     for(int j=0;j<M;j++){
-      //D[i][j]=histgram[j];
       cout<<"D["<<i<<"]["<<j<<"]:"<<D[i][j]<<endl;
     }
   }
 
-  //int class1[];
-  //int class2[];
-  //int D[N]={3,1,8,13,5,12};
-  //int D[N]={3,1,6,13,20,12};
-  //double D[N]={3,1,6,13,20,12};
-  //double D[N][M]={{3,2,5},{1,13,7},{3,6,13},{1,13,7},{3,2,5},{5,12,6}};
-  //double D[N]={3,1,6,13,19,12};
-  //double D[N][M]={3,1,6,13,19,12};
-  //int D[N]={1,2,3,4,5,6};
-  //int D[N]={3,7,12,100,23,35};
-  //int D[N]={100,85,5,87,81,82,4,1,3,6,7,8,3,1,2,20,4,100};
   //全クラスタを格納する配列CL
   double CL[N*2-1][4];
   double min_dist=100000000;
   int tmp_i,tmp_j,tmp;
+  int C[N]={0};
+  double pos[N*2-1][M];
 
   //CL[i][0]:左側
   //CL[i][1]:右側
@@ -74,7 +60,7 @@ int main(void){
   //CL[i][2]にはそのノードの座標を入れる
   //n次元拡張ふええ
   //CL[i][2]を別変数にする
-  double pos[N*2-1][M];
+  //posに初期値を設定
   for(int i=0;i<N;i++){
     for(int j=0;j<M;j++){
       pos[i][j]=D[i][j];
@@ -90,14 +76,6 @@ int main(void){
   }
 
 
-  //min_distの設定
-  //十分大きい数値にすればいい
-  //CLの最大値にする？
-  //これいらない疑惑
-  //if(CL[i][2]<min_dist)min_dist=CL[i][2];
-  //最短距離のノードを求める
-  //min_dist=1000;
-
   cout<<"dist(pos[0],pos[1])"<<dist(D[0],D[1])<<endl;
 
   //デンドログラムの作成
@@ -110,7 +88,6 @@ int main(void){
     cout << i  << ":"  << CL[i][0] << ","  << CL[i][1] << endl;
   }
 
-  int C[N]={0};
   cut(C,CL,D);
 
   for(int i=0;i<N;i++){
@@ -120,7 +97,7 @@ int main(void){
   return 0;
 }
 
-
+/***** いろんな距離の求め方(dist()メソッド) *****/
 //距離
 //double dist(double x1[M],double x2[M]){
 //  double sum=0;
@@ -188,10 +165,10 @@ double dist(double x1[M],double x2[M]){
   }
   return -sum;
 }
+/***** dist()メソッドここまで *****/
 
 //新しいクラスタの中央値を決める
-//グループ平均法の実装したい
-//ここ考える
+//これは算術平均
 void center(double x1[M],double x2[M],double pos[M]){
   for(int i=0;i<M;i++){
     pos[i]=fabs(x1[i]+x2[i])/2.0;
@@ -235,10 +212,6 @@ void dendrogram(double CL[N*2-1][4],double pos[N*2][M], double min_dist){
       if(j==N*2-1){
       }
       if(k!=i && k!= j && CL[i][3]==0 && CL[j][3]==0 && dist(pos[i],pos[j])<=min_dist){
-        //min_dist=dist(CL[i][2],CL[j][2]);
-        //for(int c=0;c<M;c++){
-        //cout<<"pos["<<k<<"]["<<i<<"]="<<pos[k][c]<<endl;
-        //}
         min_dist=dist(pos[i],pos[j]);
         //新しいクラスタ候補の作成
         CL[k][0]=i;
@@ -259,6 +232,7 @@ void dendrogram(double CL[N*2-1][4],double pos[N*2][M], double min_dist){
   cout<<"dist[0][1]"<<dist(pos[0],pos[1])<<endl;
   cout<<"dist[1][2]"<<dist(pos[1],pos[2])<<endl;
   min_dist=100000000;
+  //これは雑
   }
 }
 
@@ -269,8 +243,6 @@ void cut(int C[N],double CL[N*2-1][4],double D[N][M]){
   //contain判定
   //モジュール化したい
   //うまく実装できてねえじゃねえか
-  //初期化
-  //C[N]={0};
   int p;
 
   //切り出し
