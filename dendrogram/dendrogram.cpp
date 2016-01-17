@@ -193,7 +193,7 @@ int parent(int c,double CL[N*2-1][4],double D[N][M]){
 
 void dendrogram(double CL[N*2-1][4],double pos[N*2][M], double min_dist){
   int tmp_i,tmp_j;
-//デンドログラムを求める
+  //デンドログラムを求める
   //形式は以下
   //配列CL[i]の[0][1]は自分の子要素を表し、
   //[2]はそのノードが持つ値
@@ -202,10 +202,8 @@ void dendrogram(double CL[N*2-1][4],double pos[N*2][M], double min_dist){
   //最小の距離の差とその組み合わせを求める
   //削除はどうしよう。削除されたやつはスキップする？フラグがいる？
   //同じ距離の場合は右側にあるものが採用される
-  //ああ違う。飛ばされるCLがある。
   //ああ、ああ、ああ、ああ、ああ、ああ、ああ
   //配列操作で木構造をよしなに
-  //デンドログラムの作成はだいたい成功してる
   for(int k=N;k<N*2-1;k++){
   for(int i=0;i<N*2-1;i++){
     for(int j=i+1;j<N*2;j++){
@@ -223,7 +221,6 @@ void dendrogram(double CL[N*2-1][4],double pos[N*2][M], double min_dist){
     }
   }
   //最小が確定したところでフラグを立てる
-  //ここでエラー
   CL[tmp_i][3]=1;
   CL[tmp_j][3]=1;
   //ノードに値の代入
@@ -241,8 +238,6 @@ void cut(int C[N],double CL[N*2-1][4],double D[N][M]){
   //切り出し部分
   //こっからN以下の数値を取り出す
   //contain判定
-  //モジュール化したい
-  //うまく実装できてねえじゃねえか
   int p;
 
   //切り出し
@@ -267,6 +262,5 @@ void cut(int C[N],double CL[N*2-1][4],double D[N][M]){
   for(int i=0;i<index.size();i++){
     C[index[i]]=1;
   }
-  //切り出しここまで
 }
 
